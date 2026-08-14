@@ -9,7 +9,7 @@
 #' @export
 #'
 
-list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), container = Sys.getenv("ADLS_CONTAINER"), recursive = FALSE, include_dirs = FALSE){
+list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), container = Sys.getenv("ADLS_CONTAINER"), recursive = FALSE, include_dirs = FALSE, pattern = NULL){
 
   #Errors if environmental variables are not found
   if (endpoint == ""){
@@ -61,8 +61,13 @@ list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), c
   })
 
   if (nrow(file_list) == 0){
-    warning("No files returned. Ensure the specified path is correct and you have sufficient permissions.", immediate. = TRUE)
+    warning("No files returned. Ensure the specified path/pattern is correct and you have sufficient permissions.", immediate. = TRUE)
     return("")
+  }
+
+  if (!is.null(pattern)){
+    file_list <- file_list |>
+      dplyr::filter(stringr::str_detect(name, pattern))
   }
 
   if (include_dirs == TRUE){
@@ -71,7 +76,7 @@ list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), c
 
   } else if (include_dirs == FALSE){
 
-    temp <- filter(file_list, isdir == FALSE)$name
+    temp <- dplyr::filter(file_list, isdir == FALSE)$name
   }
   return(temp)
 }
