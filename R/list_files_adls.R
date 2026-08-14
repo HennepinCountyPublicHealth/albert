@@ -4,12 +4,13 @@
 #' @param path a directory path
 #' @param endpoint the data lake storage account. Pulls from R environmental variable by default. See setup documentation with information about how to set.
 #' @param container the data lake container. Pulls from R environmental variable by default. See setup documentation with information about how to set.
+#' @param pattern only file names that include the text will be returned
 #' @param recursive logical. Should the listing recurse into directories?
 #' @param include_dirs logical. Should subdirectory names be included?
 #' @export
 #'
 
-list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), container = Sys.getenv("ADLS_CONTAINER"), recursive = FALSE, include_dirs = FALSE, pattern = NULL){
+list_files_adls <- function(path = "", endpoint = Sys.getenv("ADLS_ENDPOINT"), container = Sys.getenv("ADLS_CONTAINER"), pattern = NULL, recursive = FALSE, include_dirs = FALSE){
 
   #Errors if environmental variables are not found
   if (endpoint == ""){
